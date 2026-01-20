@@ -1,0 +1,8 @@
+# Requirements for the script
+# Install with: pip install -r requirements.txt
+google-generativeai
+python-dotenv
+pyttsx3
+SpeechRecognition
+pyaudio
+mcp
