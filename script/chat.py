@@ -37,7 +37,7 @@ def call_speak_py(text):
 
     try:
         # It's good practice to use sys.executable to ensure we use the same python interpreter
-        subprocess.run([sys.executable, speak_script_path, text], check=True, capture_output=True, text=True)
+        subprocess.Popen([sys.executable, speak_script_path, text], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except subprocess.CalledProcessError as e:
         print(f"Error calling speak.py: {e}", file=sys.stderr)
         print(f"Stderr: {e.stderr}", file=sys.stderr)
@@ -47,7 +47,7 @@ def call_speak_py(text):
 async def main_async():
     # --- Load environment variables ---
     # Look for .env in the same directory as the script
-    dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+    dotenv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
     load_dotenv(dotenv_path=dotenv_path)
 
     # --- Configuration ---
@@ -84,6 +84,7 @@ async def main_async():
         await run_chat_session(api_key, None)
 
 async def run_chat_session(api_key, mcp_session=None):
+    global VOICE_AVAILABLE
     genai.configure(api_key=api_key)
     
     tools = []
@@ -140,7 +141,7 @@ async def run_chat_session(api_key, mcp_session=None):
                     def listen_and_recognize():
                         with mic as source:
                             recognizer.adjust_for_ambient_noise(source)
-                            audio = recognizer.listen(source)
+                            audio = recognizer.listen(source, timeout=5, phrase_time_limit=10)
                         return recognizer.recognize_google(audio, language='ja-JP')
                     
                     prompt = await asyncio.to_thread(listen_and_recognize)
