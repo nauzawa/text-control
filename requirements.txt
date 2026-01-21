@@ -1,8 +1,20 @@
 # Requirements for the script
 # Install with: pip install -r requirements.txt
-google-generativeai
+
+# Core dependencies
 python-dotenv
 pyttsx3
 SpeechRecognition
 pyaudio
 mcp
+
+# Gemini SDKs (install one or both)
+# New SDK with Grounding support (recommended)
+google-genai
+
+# Legacy SDK (fallback for MCP tools)
+google-generativeai
+
+# Optional: Whisper for high-accuracy speech recognition
+# Uncomment the line below to enable Whisper support
+# openai-whisper
